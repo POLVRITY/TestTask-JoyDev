@@ -9,28 +9,16 @@ import UIKit
 import Moya
 import CoreData
 
-struct LocalBooksModel {
-    var title: String?
-    var description: String?
-    var isHidden = false
-    
-    init(book: BooksModel) {
-        self.title = book.title
-        self.description = book.description
-    }
-}
-
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     // Objects
     private let booksService = BooksService()
     private let tableView = UITableView()
     private var dataBaseHelper = DataBaseHelper()
-    private var localBooks = [LocalBooksModel]()
     // Arrays
     private var books = [BooksModel]()
+    private var localBooks = [LocalBooksModel]()
     // Flags
     private var isAvailableBooks = true
-    private var isOpened = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,11 +67,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView.deselectRow(at: indexPath, animated: true)
         
         if indexPath.row == 0 {
-            
             if localBooks[indexPath.section].isHidden {
                 localBooks[indexPath.section].isHidden = false
                 let sections = IndexSet.init(integer: indexPath.section)
-                
                 tableView.reloadSections(sections, with: .none)
             } else {
                 localBooks[indexPath.section].isHidden = true
@@ -107,17 +93,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             case .success(let books):
                 guard let self = self, let books = books, self.isAvailableBooks else { return }
                 self.books.append(contentsOf: books)
-                
                 self.localBooks += books.map {
                     LocalBooksModel(book: $0)
                 }
-                
                 self.tableView.reloadData()
                 
                 if books.isEmpty {
                     self.isAvailableBooks = false
                 }
-                
                 books.forEach { book in
                     self.dataBaseHelper.saveBookInDataBase(with: book)
                 }

@@ -47,8 +47,8 @@ class BookCell: UITableViewCell {
         bookTitleView.textColor = UIColor.blue
         
         bookDescriptionView.numberOfLines = 0
-        bookDescriptionView.textColor = UIColor.red
         bookDescriptionView.adjustsFontSizeToFitWidth = true
+        bookDescriptionView.textColor = UIColor.red
         
     }
     
